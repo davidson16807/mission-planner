@@ -1,0 +1,58 @@
+origin	name	block	shorthand	heatshield	lander	fuel (Mg)	structure (Mg)	sealevel thrust (DkN)	sealevel exhaust? (km/s)	vacuum thrust (DkN)	vacuum exhaust (km/s)	min throttle	unpressurized volume (m³)	pressurized volume (m³)	habitable volume (m³)
+			Mg			0	1	0	1	0	1	_	0	0	0
+spacex	crew starship	1	ssc1	interplanetary	x	1200	120	1250	3.2	1250	3.7	0.083ʰʲ	0		
+spacex	crew starship	2	ssc2	interplanetary	x	1500	120	1360	3.2	1400	3.7	0.083ʰʲ	0		
+spacex	crew starship	3	ssc3	interplanetary	x	1600	110?	1500	3.2	1600	3.7	0.083ʰʲ	0	1000ᶜ	600ᶜ
+spacex	crew starship	4	ssc4	interplanetary	x	2300	110?	1818	3.2	2700	3.7	0.083ʰʲ	0	1000ᶜ	600ᶜ
+spacex	freighter starship	3	ssf3	interplanetary	x	1600	110?	1500	3.2	1600	3.7	0.083ʰʲ	1000ᶜ	0	0
+spacex	freighter starship	4	ssf4	interplanetary	x	2300	110?	1818	3.2	2700	3.7	0.083ʰʲ	1000ᶜ	0	0
+spacex	tanker starship	3	sst3	interplanetary	x	2076ᵈ	110?	1500	3.2	1600	3.7	0.083ʰʲ	0	0	0
+spacex	tanker starship	4	sst4	interplanetary	x	2776ᵈ	110?	1818	3.2	2700	3.7	0.083ʰʲ	0	0	0
+spacex	lunar crew starship	3	sslc3		x	1600	90ᵇ	1500	_	1600	3.7	0.083ʰʲ	0	1000ᶜ	600ᶜ
+spacex	lunar crew starship	4	sslc4		x	2300	90ᵇ	1818	_	2700	3.7	0.083ʰʲ	0	1000ᶜ	600ᶜ
+spacex	lunar freighter starship	3	sslf3		x	1600	90ᵇ	1500	_	1600	3.7	0.083ʰʲ	1000ᶜ	0	0
+spacex	lunar freighter starship	4	sslf4		x	2300	90ᵇ	1818	_	2700	3.7	0.083ʰʲ	1000ᶜ	0	0
+spacex	lunar tanker starship	3	sslt3		x	2076ᵈ	90ᵇ	1500	_	1600	3.7	0.083ʰʲ	0	0	0
+spacex	lunar tanker starship	4	sslt4		x	2776ᵈ	90ᵇ	1818	_	2700	3.7	0.083ʰʲ	0	0	0
+spacex	orbiter starship	3	sso3			1600	85ᵇ	1500	_	1600	3.7	0.083ʰʲ	0	1000ᶜ	600ᶜ
+spacex	orbiter starship	4	sso4			2300	85ᵇ	1818	_	2700	3.7	0.083ʰʲ	0	1000ᶜ	600ᶜ
+spacex	depot starship	3	ssd3			2076ᵈ	85ᵇ	1500	3.2	1600	3.7	0.083ʰʲ	0	0	0
+spacex	depot starship	4	ssd4			2776ᵈ	85ᵇ	1818	3.2	2700	3.7	0.083ʰʲ	0	0	0
+spacex	starship booster	1	ssb1		x	3250	240	7130	3.2	7130?	3.4	0.015ʰʲ	0	0	0
+spacex	starship booster	2	ssb2		x	3250	240	7590	3.2	7720?	3.4	0.015ʰʲ	0	0	0
+spacex	starship booster	3	ssb3		x	3650	266	8240	3.2	8789?	3.4	0.015ʰʲ	0	0	0
+spacex	starship booster	4	ssb4		x	4050	275	10000	3.2	14851	3.4	0.015ʰʲ	0	0	0
+nasa	sls srb		srb5			640	91	1200	2.64	1470		1	0	0	0
+nasa	sls ssme		slsme			984	97.94	744	3.59	911.6	4.43		0	0	0
+nasa	orion cm+esm		orion	interplanetary		33.446	15.483	_	_	4.37	2.6		0	19.6	8.9
+nasa	shuttle ssme		ssme	orbital	x	110	110	558	3.6	683.7	4.4		387	74.3	74.3
+nasa	shuttle oms		ssoms	orbital	x	110	78	_	_	5.34	3.1		0	0	0
+nasa	shuttle srb		srb4			500	91	1200	2.64	1470		1	0	0	0
+nasa	shuttle et		sset			740	26	_	_	_	_		0	0	0
+nasa	saturn v ic		s51c			2077	137	3300	2.5	_	_		0	0	0
+nasa	saturn v ii		s52			427	43	_	_	440	4.16		0	0	0
+nasa	saturn v ivb		s54b			105	15	_	_	100	4.16		0	0	0
+nasa	apollo csm		acsm	interplanetary		2.8	11.9	_	_	9.119	3.084		0	10.4	5.9
+nasa	apollo dps		adps		x	10.9	4.28	_	_	4.39ˡ	3.05	0.55ˡ		6.7	4.5ˡ
+nasa	apollo aps		aaps		x	2.55	2.15	_	_	1.6	3.05			6.7	4.5
+spacex	falcon 9 stage 1	1	f911		x	395.7	25.6		2.75	494	2.98	0.066ʰ	0	0	0
+spacex	falcon 9 stage 1	5	f951		x	410.9	22.2	7600	2.77	882.9	3.05	0.044ʰⁱ	0	0	0
+spacex	falcon 9 stage 2	1	f912		x	92.67	3.9	_	_	61.7	3.35	0.6ʰ	0	0	0
+spacex	falcon 9 stage 2	5	f952		x	107.5	4	_	_	93.4	3.41	0.4ʰⁱ	0	0	0
+spacex	dragon 1		d1	orbital			4.2	_	_	0.04	2.9		14	11	
+spacex	dragon 1 extended		d1e	orbital			4.2	_	_	0.04	2.9		34	11	
+spacex	dragon 2		d2	orbital		2.562	7.7	_	_	7.1	2.9		37	9.3	
+blue origin	new glen gs1		ng721			1229	100?	1992.8			3.3	0.064ʰᵏ			
+blue origin	new glen 9x4 gs1		ng941					2562.2			3.3	0.05ʰᵏ			
+blue origin	new glen gs2		ng2						_	177.9	4.36				
+blue origin	new glen 9x4 gs2		ng942						_	355.8	4.36				
+blue origin	blue moon	2	bm2		x	29	16	_	_	4.4	4.5				
+ula	starliner		slcsv	orbital		5.9ʲ	10.886ʲ	_	_					11	
+ula	vulcan booster		gem63xl			47.853	4.521	206.1	2.749			1	0	0	0
+ula	vulcan		vulcan			382	28.6		3.1	489.3	3.3		0	0	0
+nasa	centaur 2 engine	3	centaur3			20.83	2.247	_	_	9.92	4.418	0.47	0	0	0
+nasa	centaur 1 engine	3	centaur3			20.83	2.462	_	_	9.92	4.418	0.47	0	0	0
+nasa	centaur	4	centaur4			46.5	7.1	_	_	21.46	4.520	0.47	0	0	0
+nasa	centaur	5	centaur5			45.9	7.1	_	_	21.46	4.520	0.47	0	0	0
+nasa	voyager		vger			0.0931	0.7219	_	_	0.00889	2.2		0	0	0
+nasa	cassini		cassini			3.587	2.125	_	_	0.445	3.26		0	0	0

@@ -6,8 +6,9 @@ class Craft:
 	def __init__(self,
 		heatshield,
 		lander,
-		dry_mass,
+		fuel_mass,
 		max_fuel_mass,
+		dry_mass,
 		sealevel_thrust,
 		sealevel_exhaust,
 		vacuum_thrust,
@@ -19,23 +20,26 @@ class Craft:
 	):
 		self.heatshield = heatshield
 		self.lander = lander
-		self.dry_mass = dry_mass
-		self.fuel_mass = max_fuel_mass
+		self.fuel_mass = fuel_mass
 		self.max_fuel_mass = max_fuel_mass
-		self.sealevel_thrust = sealevel_thrust if sealevel_thrust else vacuum_thrust
-		self.sealevel_exhaust = sealevel_exhaust if sealevel_exhaust else vacuum_exhaust
-		self.vacuum_thrust = vacuum_thrust if vacuum_thrust else sealevel_thrust
-		self.vacuum_exhaust = vacuum_exhaust if vacuum_exhaust else sealevel_exhaust
-		self.min_throttle = min_throttle if min_throttle else 0.0
-		self.unpressurized_volume = unpressurized_volume if unpressurized_volume else 0.0
-		self.pressurized_volume = pressurized_volume if pressurized_volume else 0.0
-		self.habitable_volume = habitable_volume if habitable_volume else 0.0
+		self.dry_mass = dry_mass
+		self.sealevel_thrust = sealevel_thrust if sealevel_thrust is not None else vacuum_thrust
+		self.sealevel_exhaust = sealevel_exhaust if sealevel_exhaust is not None else vacuum_exhaust
+		self.vacuum_thrust = vacuum_thrust if vacuum_thrust is not None else sealevel_thrust
+		self.vacuum_exhaust = vacuum_exhaust if vacuum_exhaust is not None else sealevel_exhaust
+		self.min_throttle = min_throttle if min_throttle is not None else 0.0
+		self.unpressurized_volume = unpressurized_volume if unpressurized_volume is not None else 0.0
+		self.pressurized_volume = pressurized_volume if pressurized_volume is not None else 0.0
+		self.habitable_volume = habitable_volume if habitable_volume is not None else 0.0
+		assert self.fuel_mass <= self.max_fuel_mass, f'invalid fuel mass: {self.fuel_mass} < {self.max_fuel_mass}'
+		assert 0 <= self.fuel_mass, f'invalid fuel mass: 0 < {self.fuel_mass}'
 	def copy(self):
 		return Craft(
 			self.heatshield, # delivery vehicle is presumed to protect its cargo
 			self.lander,     # delivery vehicle is presumed to protect its cargo
-			self.dry_mass,
+			self.fuel_mass,
 			self.max_fuel_mass,
+			self.dry_mass,
 			self.sealevel_thrust,
 			self.sealevel_exhaust,
 			self.vacuum_thrust,
@@ -45,19 +49,26 @@ class Craft:
 			self.pressurized_volume,
 			self.habitable_volume,
 		)
+	def __repr__(self):
+		return f'({self.dry_mass}🚀{self.fuel_mass}/{self.max_fuel_mass}→\t{self.sealevel_thrust}/{self.vacuum_thrust}\t{self.sealevel_exhaust}/{self.vacuum_exhaust})'
 	def __add__(self, other):
 		# return an craft where the left and right operands are flown together
 		# example: sls = (2*srb5+slsme)>>orion
 		return Craft(
 			'',    # two capsules can't survive reentry strapped together
 			False, # two boosters can't land strapped together
-			self.dry_mass + other.dry_mass,
+			self.fuel_mass + other.fuel_mass,
 			self.max_fuel_mass + other.max_fuel_mass,
+			self.dry_mass + other.dry_mass,
 			self.sealevel_thrust + other.sealevel_thrust,
+			other.sealevel_exhaust if self.sealevel_thrust == 0 else
+			self.sealevel_exhaust if other.sealevel_thrust == 0 else
 			(self.sealevel_thrust + other.sealevel_thrust) / 
 				(self.sealevel_thrust/self.sealevel_exhaust + other.sealevel_thrust/other.sealevel_exhaust), 
 				# weighted harmonic mean of exhausts, weighted by thrust
 			self.vacuum_thrust + other.vacuum_thrust,
+			other.vacuum_exhaust if self.vacuum_thrust == 0 else
+			self.vacuum_exhaust if other.vacuum_thrust == 0 else
 			(self.vacuum_thrust + other.vacuum_thrust) / 
 				(self.vacuum_thrust/self.vacuum_exhaust + other.vacuum_thrust/other.vacuum_exhaust), 
 				# weighted harmonic mean of exhausts, weighted by thrust
@@ -74,8 +85,9 @@ class Craft:
 		return Craft(
 			'',    # two capsules can't survive reentry strapped together
 			False, # two boosters can't land strapped together
-			other * self.dry_mass,
+			other * self.fuel_mass,
 			other * self.max_fuel_mass,
+			other * self.dry_mass,
 			other * self.sealevel_thrust,
 			self.sealevel_exhaust,
 			other * self.vacuum_thrust,
@@ -96,6 +108,8 @@ class Craft:
 	def thrust(self, atmospheres):
 		return (self.sealevel_thrust-self.vacuum_thrust) * atmospheres + self.vacuum_thrust
 	def range(self, atmospheres):
+		return self.exhaust(atmospheres) * log(self.total_mass() / self.dry_mass)
+	def max_range(self, atmospheres):
 		return self.exhaust(atmospheres) * log(self.launch_mass() / self.dry_mass)
 	def launch_mass(self):
 		return self.dry_mass + self.max_fuel_mass
@@ -115,13 +129,13 @@ class Craft:
 		return self.with_fuel_mass(self.max_fuel_mass)
 	def burn(self, speed_change, atmospheres=0):
 		# returns the state of a craft that starts a burn in a known state
-		stop_mass = self.total_mass() / exp(speed_change / self.vacuum_exhaust)
+		stop_mass = self.total_mass() / exp(speed_change / self.exhaust(atmospheres))
 		assert stop_mass-self.dry_mass >= 0.0, f'fell short of fuel by {stop_mass-self.dry_mass} units'
 		return self.with_fuel_mass(stop_mass-self.dry_mass)
 	def deburn(self, speed_change, atmospheres=0):
 		# returns the state of a craft that must reach a given state after a burn that causes a given change in speed
-		start_mass = exp(speed_change / self.vacuum_exhaust) * self.total_mass()
-		assert start_mass-self.dry_mass < self.max_fuel_mass, f'over fuel capacity by {start_mass-self.dry_mass-self.max_fuel_mass} units'
+		start_mass = exp(speed_change / self.exhaust(atmospheres)) * self.total_mass()
+		assert start_mass-self.dry_mass <= self.max_fuel_mass, f'over fuel capacity by {start_mass-self.dry_mass-self.max_fuel_mass} units'
 		return self.with_fuel_mass(start_mass - self.dry_mass)
 	def boil(self, days, boiloff_rate=0.001): # default from Kutter (2008)
 		# returns the state of a craft after boil off from waiting a given number of days with a given boil-off rate
@@ -136,10 +150,11 @@ class CraftVectorCodec:
 	def encode(self, craft):
 		return [str(entry) if entry is not None else ''
 			for entry in [
+				'','','','', # labels in csv
 				craft.heatshield,
-				craft.lander,
-				craft.dry_mass,
+				'x' if craft.lander else '',
 				craft.max_fuel_mass,
+				craft.dry_mass,
 				craft.sealevel_thrust,
 				craft.sealevel_exhaust,
 				craft.vacuum_thrust,
@@ -157,6 +172,7 @@ class CraftVectorCodec:
 		return Craft(
 			stripped[4],
 			stripped[5]=='x',
+			floats[0], # fully fueled
 			*floats
 		)
 
@@ -186,7 +202,7 @@ class Properties:
 		return craft.vacuum_thrust / craft.dry_mass
 	def min_thrust_to_weight(self, craft): # answers "can it get off the ground?"
 		return self.min_sealevel_acceleration(craft) / self.earth_gravity
-	def max_nominal_g_force(self, craft): # answers "can you survive the flight?"
+	def max_nominal_g_force(self, craft): # answers "will g-forces kill you?"
 		return self.max_vacuum_acceleration(craft) * craft.min_throttle / self.earth_gravity
 	def max_off_nominal_g_force(self, craft): # answers "can g-forces kill you?"
 		return self.max_vacuum_acceleration(craft) / self.earth_gravity
@@ -253,7 +269,7 @@ if __name__ == '__main__':
 			LookupVectorCodec(CraftVectorCodec(), 3),
 			DelimitedTableTextCodec())
 
-	with open('crafts.tsv','r') as file:
+	with open('rss-crafts.tsv','r') as file:
 		df = tsvs.decode(file.read())
 
 	time_at_entry = 270 # days

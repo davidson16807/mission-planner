@@ -1,0 +1,38 @@
+,flight,km/h,km/s,
+booster at separation,1,5600,1.56,
+booster at separation,11,4700,1.31,
+booster after boostback,11,310,0.086,
+booster before landing burn,11,1300,0.36,
+starship in freefall,11,330,0.092,
+starship in suborbit,11,26640,7.4,
+,,,,
+starship burn to orbit,11,,7.7,
+starship fuel surplus,11,,1.83,
+booster fuel surplus,11,,6.2,
+,,,boiloff,heatshield
+earth to LEO,9,,,
+LEO to mars,3.52,,,x
+LEO to EMO,4.27,,,
+LEO to LMO,5.71,,,
+mars to LMO,3.6,,,
+mars to EMO,5.04,,,
+mars to earth,5.71,,,x
+LMO to earth,2.11,,,x
+EMO to earth,0.67,,,x
+,,,,
+lunar flyby,3.12,,,
+lunar orbiter,3.4,,,
+lunar lander,8.8,,,
+crewed mars flyby,3.52,,,
+crewed mars orbiter,4.94*,,,
+crewed mars lander,9.23*,,,x
+crewed mars lander before EMO,8.56*,,,
+crewed mars lander before LMO,7.12*,,,
+LMO to earth,2.11,,,x
+EMO to earth,0.67,,,x
+sending mars depot to LMO,5.71,,,
+sending mars depot to EMO,4.27,,,
+fuel in LMO depot,6.26,,,
+fuel in EMO depot,7.70,,,
+,,,,
+* not considering boil off,,,,
