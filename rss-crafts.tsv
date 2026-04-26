@@ -2,22 +2,22 @@ origin	name	block	shorthand	heatshield	lander	fuel (Mg)	structure (Mg)	sealevel 
 			Mg			0	1	0	1	0	1	_	0	0	0
 spacex	crew starship	1	ssc1	interplanetary	x	1200	120	1250	3.2	1250	3.7	0.083ʰʲ	0		
 spacex	crew starship	2	ssc2	interplanetary	x	1500	120	1360	3.2	1400	3.7	0.083ʰʲ	0		
-spacex	crew starship	3	ssc3	interplanetary	x	1600	110?	1500	3.2	1600	3.7	0.083ʰʲ	0	1000ᶜ	600ᶜ
-spacex	crew starship	4	ssc4	interplanetary	x	2300	110?	1818	3.2	2700	3.7	0.083ʰʲ	0	1000ᶜ	600ᶜ
+spacex	crew starship	3	ssc3	interplanetary	x	1550	110?	1500	3.2	1600	3.7	0.083ʰʲ	0	1000ᶜ	600ᶜ
+spacex	crew starship	4	ssc4	interplanetary	x	2300	110?	2250	3.2	2400	3.7	0.083ʰʲ	0	1000ᶜ	600ᶜ
 spacex	freighter starship	3	ssf3	interplanetary	x	1600	110?	1500	3.2	1600	3.7	0.083ʰʲ	1000ᶜ	0	0
-spacex	freighter starship	4	ssf4	interplanetary	x	2300	110?	1818	3.2	2700	3.7	0.083ʰʲ	1000ᶜ	0	0
+spacex	freighter starship	4	ssf4	interplanetary	x	2300	110?	2250	3.2	2400	3.7	0.083ʰʲ	1000ᶜ	0	0
 spacex	tanker starship	3	sst3	interplanetary	x	2076ᵈ	110?	1500	3.2	1600	3.7	0.083ʰʲ	0	0	0
-spacex	tanker starship	4	sst4	interplanetary	x	2776ᵈ	110?	1818	3.2	2700	3.7	0.083ʰʲ	0	0	0
-spacex	lunar crew starship	3	sslc3		x	1600	90ᵇ	1500	_	1600	3.7	0.083ʰʲ	0	1000ᶜ	600ᶜ
-spacex	lunar crew starship	4	sslc4		x	2300	90ᵇ	1818	_	2700	3.7	0.083ʰʲ	0	1000ᶜ	600ᶜ
-spacex	lunar freighter starship	3	sslf3		x	1600	90ᵇ	1500	_	1600	3.7	0.083ʰʲ	1000ᶜ	0	0
-spacex	lunar freighter starship	4	sslf4		x	2300	90ᵇ	1818	_	2700	3.7	0.083ʰʲ	1000ᶜ	0	0
-spacex	lunar tanker starship	3	sslt3		x	2076ᵈ	90ᵇ	1500	_	1600	3.7	0.083ʰʲ	0	0	0
-spacex	lunar tanker starship	4	sslt4		x	2776ᵈ	90ᵇ	1818	_	2700	3.7	0.083ʰʲ	0	0	0
-spacex	orbiter starship	3	sso3			1600	85ᵇ	1500	_	1600	3.7	0.083ʰʲ	0	1000ᶜ	600ᶜ
-spacex	orbiter starship	4	sso4			2300	85ᵇ	1818	_	2700	3.7	0.083ʰʲ	0	1000ᶜ	600ᶜ
+spacex	tanker starship	4	sst4	interplanetary	x	2776ᵈ	110?	2250	3.2	2400	3.7	0.083ʰʲ	0	0	0
+spacex	lunar crew starship	3	sslc3		x	1600	90ᵇ	1500	3.2	1600	3.7	0.083ʰʲ	0	1000ᶜ	600ᶜ
+spacex	lunar crew starship	4	sslc4		x	2300	90ᵇ	2250	3.2	2400	3.7	0.083ʰʲ	0	1000ᶜ	600ᶜ
+spacex	lunar freighter starship	3	sslf3		x	1600	90ᵇ	1500	3.2	1600	3.7	0.083ʰʲ	1000ᶜ	0	0
+spacex	lunar freighter starship	4	sslf4		x	2300	90ᵇ	2250	3.2	2400	3.7	0.083ʰʲ	1000ᶜ	0	0
+spacex	lunar tanker starship	3	sslt3		x	2076ᵈ	90ᵇ	1500	3.2	1600	3.7	0.083ʰʲ	0	0	0
+spacex	lunar tanker starship	4	sslt4		x	2776ᵈ	90ᵇ	2250	3.2	2400	3.7	0.083ʰʲ	0	0	0
+spacex	orbiter starship	3	sso3			1600	85ᵇ	1500	3.2	1600	3.7	0.083ʰʲ	0	1000ᶜ	600ᶜ
+spacex	orbiter starship	4	sso4			2300	85ᵇ	2250	3.2	2400	3.7	0.083ʰʲ	0	1000ᶜ	600ᶜ
 spacex	depot starship	3	ssd3			2076ᵈ	85ᵇ	1500	3.2	1600	3.7	0.083ʰʲ	0	0	0
-spacex	depot starship	4	ssd4			2776ᵈ	85ᵇ	1818	3.2	2700	3.7	0.083ʰʲ	0	0	0
+spacex	depot starship	4	ssd4			2776ᵈ	85ᵇ	2250	3.2	2400	3.7	0.083ʰʲ	0	0	0
 spacex	starship booster	1	ssb1		x	3250	240	7130	3.2	7130?	3.4	0.015ʰʲ	0	0	0
 spacex	starship booster	2	ssb2		x	3250	240	7590	3.2	7720?	3.4	0.015ʰʲ	0	0	0
 spacex	starship booster	3	ssb3		x	3650	266	8240	3.2	8789?	3.4	0.015ʰʲ	0	0	0

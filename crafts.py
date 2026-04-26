@@ -20,9 +20,9 @@ class Craft:
 	):
 		self.heatshield = heatshield
 		self.lander = lander
-		self.fuel_mass = fuel_mass
-		self.max_fuel_mass = max_fuel_mass
-		self.dry_mass = dry_mass
+		self.fuel_mass = fuel_mass if fuel_mass is not None else 0
+		self.max_fuel_mass = max_fuel_mass if max_fuel_mass is not None else 0
+		self.dry_mass = dry_mass if dry_mass is not None else 0
 		self.sealevel_thrust = sealevel_thrust if sealevel_thrust is not None else vacuum_thrust
 		self.sealevel_exhaust = sealevel_exhaust if sealevel_exhaust is not None else vacuum_exhaust
 		self.vacuum_thrust = vacuum_thrust if vacuum_thrust is not None else sealevel_thrust
@@ -50,7 +50,7 @@ class Craft:
 			self.habitable_volume,
 		)
 	def __repr__(self):
-		return f'({self.dry_mass}🚀{self.fuel_mass}/{self.max_fuel_mass}→\t{self.sealevel_thrust}/{self.vacuum_thrust}\t{self.sealevel_exhaust}/{self.vacuum_exhaust})'
+		return f'({self.dry_mass}🚀{self.fuel_mass}/{self.max_fuel_mass}\t→\t{self.sealevel_thrust}/{self.vacuum_thrust}\t{self.sealevel_exhaust}/{self.vacuum_exhaust})'
 	def __add__(self, other):
 		# return an craft where the left and right operands are flown together
 		# example: sls = (2*srb5+slsme)>>orion
@@ -134,8 +134,9 @@ class Craft:
 		return self.with_fuel_mass(stop_mass-self.dry_mass)
 	def deburn(self, speed_change, atmospheres=0):
 		# returns the state of a craft that must reach a given state after a burn that causes a given change in speed
-		start_mass = exp(speed_change / self.exhaust(atmospheres)) * self.total_mass()
-		assert start_mass-self.dry_mass <= self.max_fuel_mass, f'over fuel capacity by {start_mass-self.dry_mass-self.max_fuel_mass} units'
+		mass_ratio = exp(speed_change / self.exhaust(atmospheres))
+		start_mass = mass_ratio * self.total_mass()
+		assert start_mass-self.dry_mass <= self.max_fuel_mass, f'over fuel capacity by {start_mass-self.dry_mass-self.max_fuel_mass} units, reduce dry mass by {self.dry_mass-self.launch_mass()/mass_ratio} units'
 		return self.with_fuel_mass(start_mass - self.dry_mass)
 	def boil(self, days, boiloff_rate=0.001): # default from Kutter (2008)
 		# returns the state of a craft after boil off from waiting a given number of days with a given boil-off rate
@@ -272,21 +273,26 @@ if __name__ == '__main__':
 	with open('rss-crafts.tsv','r') as file:
 		df = tsvs.decode(file.read())
 
-	time_at_entry = 270 # days
-	time_at_return = 700 # days
-	time_on_mars = time_at_return - time_at_entry
-
 	'''
 	PLACE ABBREVIATIONS:
 	earth 	earth ground
 	leo 	lower earth orbit
 	eeo 	eccentric earth orbit
 	heo 	high earth orbit
-	tmi 	trans-martian injection
+	elt 	earth to lunar transfer
+
+	met 	mars to earth transfer
 	lmo 	lower martian orbit
 	emo 	eccentric martian orbit
 	hmo 	high martian orbit
+	emt 	earth-mars transfer
 	mars 	mars ground
+
+	lvo 	lower veneran orbit
+	evo 	eccentric veneran orbit
+	hvo 	high veneran orbit
+	vet 	earth to venus transfer
+	evt 	venus to earth transfer
 
 	CRAFT ABBREVIATIONS:
 	hlso 	starship human landing system with orion: mli, no heatshield, no fins, no legs, docked to orion with european space module
@@ -294,36 +300,86 @@ if __name__ == '__main__':
 	ssd 	starship depot: mli, no heatshield, no fins, no legs, habitable volume converted to fuel tanks
 	'''
 
+	ssc_terminal_velocity_over_earth = 0.33 # observed from starship flight 11
+
+	# times assume a typicaly 850 day Hohmann-transfer mars mission
+	time_at_mars_entry = 270 # days
+	time_at_met = 700 # days
+	time_on_mars = time_at_met - time_at_mars_entry
+	ss_terminal_velocity_over_mars = ss_terminal_velocity_over_earth * 4.8
+
+	# times are spit balls assuming 400 day mission as suggested by 1970s Apollo applications study
+	time_at_venus_entry = 130 # days
+	time_at_vet = 260 # days
+	time_over_venus = time_at_vet - time_at_venus_entry
+
+	# LUNAR HLS STARSHIP:
+	hls_leo = (df['sslc4'] + 23*df['Mg']).empty().deburn(2*(2.44+0.68+0.14+0.68+1.72)) 
+
+	# CREWED VENUS FLYBY USING HLS/ORION:
+	# hls+orion payload, mass budget for a crew of 4 on the ISS
+	hlso_empty = ((df['sso3'] + 90*df['Mg']) >> df['orion']).empty()
+	# hls+orion at evo before earth departure
+	hlso_evo = hlso_empty.deburn(0.36)
+	# hls+orion at vet after earth departure
+	hlso_vet = hlso_evo.deboil(time_at_vet)
+	# hls+orion over venus before insertion
+	hlso_evo = hlso_empty.deburn(0.36)
+	# hls+orion at vet after earth departure
+	hlso_vet = hlso_evo.deboil(time_at_venus_entry)
+	# hls+orion at leo before earth departure
+	hlso_leo = hlso_vet.deburn(2.44+0.68+0.09+0.28+0.36)
+
 	# CREWED MARS FLYBY USING HLS/ORION:
 	# hls+orion payload, mass budget for a crew of 4 on the ISS
 	hlso_empty = ((df['sso3'] + 90*df['Mg']) >> df['orion']).empty()
 	# hls+orion at emo before earth departure
 	hlso_emo = hlso_empty.deburn(0.67)
-	# hls+orion at tmi after earth departure
-	hlso_tmi = hlso_emo.deboil(time_at_return)
+	# hls+orion at emt after earth departure
+	hlso_emt = hlso_emo.deboil(time_at_met)
 	# hls+orion at leo before earth departure
-	hlso_leo = hlso_tmi.deburn(2.44+0.68+0.09+0.39+0.67)
+	hlso_leo = hlso_emt.deburn(2.44+0.68+0.09+0.39+0.67)
+
+	# STARSHIP INTERSTELLAR PROBE VELOCITY:
+	print((df['ssf3'] >> df['vger']).range(0))
+
+	# STARSHIP URANUS ORBITER VELOCITY:
+	(df['ssf3'] >> df['cassini']).empty().deburn(2.44+0.68+0.09+0.39+0.92+0.38+1.40+0.99+0.69)
 
 	# CREWED MARS LANDING ASSUMING fuel DEPOT AT LMO:
-	# starship crew payload, mass budget for a crew of 4 on the ISS
+	# starship crew payload, mass budget for a crew of 4 on the ISS for 850 days
 	ssc_empty = (df['ssc4'] + 90*df['Mg']).empty()
 	# starship crew at lmo before crew return to earth
-	ssc_lmo = ssc_empty.deburn(2.11)
+	ssc_lmo = ssc_empty.deburn(0.33+2.11)
 	# starship depot at lmo before crew return for earth
 	ssd_lmo = df['ssd4'].with_fuel_mass(ssc_lmo.fuel_mass)
 	# starship depot at leo before burn to mars
-	ssd_leo = (ssd_lmo.deboil(time_at_return).deburn(5.71))
+	ssd_leo = (ssd_lmo.deboil(time_at_met).deburn(5.71))
 	# starship crew at mars before return launch
 	ssc_mars = ssc_empty.deburn(3.6)
-	# starship crew at tmi after earth departure
-	ssc_tmi = ssc_mars.deboil(time_at_return)
-	# starship crew at leo before earth departure
-	ssc_leo = ssc_tmi.deburn(3.52)
-
-	# INTERSTELLAR PROBE VELOCITY:
-	print((df['ssf3'] >> df['vger']).range(0))
+	# starship crew at emt after earth departure
+	ssc_emt = ssc_mars.deboil(time_on_mars).deburn(ss_terminal_velocity_over_mars).deboil(time_at_met)
+	# starship crew when refueled at eeo before earth departure
+	ssc_eeo = ssc_emt.deburn(3.52-2.44-0.68)
 
 	breakpoint()
 
-	# ASSUMING NO ISRU OR fuel DEPOT:
-	# ssc_direct = ssc_lmo.deburn(3.6).deboil(time_at_return).deburn(3.52) # can't do it, throws exception
+	# much of what follows will raise errors due to fuel limits:
+
+	# CREWED MARS LANDING ASSUMING FUEL TANKER ON MARS:
+	# this doesn't work - the tanker needs to burn more for the landing, stores less fuel, and carries heatshield/legs/fins
+	# starship crew payload, mass budget for a crew of 4 on the ISS for 850 days
+	ssc_empty = (df['ssc4'] + 90*df['Mg']).empty()
+	# starship crew at mars before return launch
+	ssc_mars = ssc_empty.deburn(0.33+2.11+3.6)
+	# starship depot on mars before crew return for earth
+	sst_lmo = df['sst4'].with_fuel_mass(ssc_mars.fuel_mass)
+	# starship depot at leo before burn to mars
+	sst_leo = (sst_lmo.deboil(time_at_met).deburn(5.71+0.33*4.8))
+	# starship crew at emt after earth departure
+	ssc_emt = ssc_mars.deboil(time_on_mars).deburn(ss_terminal_velocity_over_mars).deboil(time_at_met) # can't do it, error
+	# starship crew when refueled at elt before earth departure
+	ssc_elt = ssc_emt.deburn(3.52-2.44-0.68)
+
+	# ASSUMING NO ISRU NOR fuel DEPOT:
+	ssc_direct = ssc_lmo.deburn(3.6).deboil(time_at_met).deburn(3.52) # can't do it, error
